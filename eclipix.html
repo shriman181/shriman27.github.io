@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eclipix — AI Intelligence for AEC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#05080F;
+  --bg:#090D1B;
+  --s1:#0D1222;
+  --s2:#111828;
+  --s3:#161F34;
+  --c:#00CFFF;
+  --cg:rgba(0,207,255,.13);
+  --cd:rgba(0,207,255,.06);
+  --o:#FF5519;
+  --og:rgba(255,85,25,.11);
+  --au:#FFC024;
+  --ag:rgba(255,192,36,.09);
+  --w:#DDE6F8;
+  --m:#5E718F;
+  --m2:#8DA3C0;
+  --b:rgba(255,255,255,.055);
+  --bc:rgba(0,207,255,.16);
+  --gl:rgba(0,207,255,.038);
+  --fn:'Syne',sans-serif;
+  --fb:'Plus Jakarta Sans',sans-serif;
+  --fm:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);overflow-x:hidden;font-size:16px;line-height:1.6}
+
+/* GRID BG */
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--gl) 1px,transparent 1px),linear-gradient(90deg,var(--gl) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+
+/* ═══ NAV ═══ */
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 3rem;transition:all .35s}
+#nav.solid{background:rgba(9,13,27,.94);backdrop-filter:blur(24px);border-bottom:1px solid var(--b)}
+.nav-logo{font-family:var(--fn);font-size:1.35rem;font-weight:800;color:var(--w);text-decoration:none;display:flex;align-items:center;gap:.55rem;letter-spacing:-.02em}
+.logox{width:26px;height:26px;position:relative;flex-shrink:0}
+.logox svg{width:100%;height:100%}
+.nav-links{display:flex;align-items:center;gap:2.5rem;list-style:none}
+.nav-links a{color:var(--m2);text-decoration:none;font-size:.82rem;letter-spacing:.03em;transition:color .2s;font-family:var(--fm)}
+.nav-links a:hover{color:var(--w)}
+.nav-cta{background:var(--c);color:var(--ink);padding:.55rem 1.3rem;border-radius:3px;font-family:var(--fn);font-size:.82rem;font-weight:700;text-decoration:none;letter-spacing:.02em;transition:all .2s;white-space:nowrap}
+.nav-cta:hover{background:#33DAFF;transform:translateY(-1px)}
+
+/* ═══ HERO ═══ */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:7rem 3rem 4rem;gap:3rem;overflow:hidden}
+.hero-bg-glow{position:absolute;top:-20%;right:-5%;width:700px;height:700px;background:radial-gradient(ellipse,rgba(0,207,255,.06) 0%,transparent 65%);pointer-events:none;z-index:0}
+.hero-content{flex:0 0 auto;width:min(580px,55%);position:relative;z-index:2}
+.hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--cg);border:1px solid var(--bc);color:var(--c);padding:.3rem .85rem;border-radius:100px;font-family:var(--fm);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.6rem}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--c);animation:pdot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+.hero-h1{font-family:var(--fn);font-size:clamp(2.8rem,5.5vw,5.2rem);font-weight:800;line-height:.98;letter-spacing:-.035em;color:var(--w);margin-bottom:1.5rem}
+.hero-h1 .cx{color:var(--c)}
+.hero-h1 .ox{color:var(--o)}
+.hero-p{font-size:1rem;color:var(--m2);line-height:1.75;max-width:460px;margin-bottom:2.5rem;font-weight:300}
+.hero-ctas{display:flex;gap:.85rem;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-p{background:var(--c);color:var(--ink);padding:.65rem 1.6rem;border-radius:3px;font-family:var(--fn);font-size:.85rem;font-weight:700;text-decoration:none;letter-spacing:.02em;transition:all .2s}
+.btn-p:hover{background:#33DAFF;transform:translateY(-1px)}
+.btn-g{color:var(--w);padding:.65rem 1.4rem;border-radius:3px;font-size:.85rem;font-weight:400;text-decoration:none;border:1px solid var(--b);transition:all .2s;font-family:var(--fb)}
+.btn-g:hover{border-color:var(--bc);color:var(--c)}
+.hero-stats{display:flex;gap:2.5rem;padding-top:1.75rem;border-top:1px solid var(--b)}
+.hs-num{display:block;font-family:var(--fn);font-size:1.8rem;font-weight:800;color:var(--w);letter-spacing:-.03em;line-height:1}
+.hs-label{display:block;font-family:var(--fm);font-size:.6rem;color:var(--m);letter-spacing:.1em;text-transform:uppercase;margin-top:.25rem}
+
+/* HERO VISUAL */
+.hero-visual{flex:1;position:relative;min-height:480px;z-index:2;display:flex;align-items:center;justify-content:center}
+.blueprint-wrap{position:relative;width:100%;max-width:520px}
+.blueprint-svg{width:100%;height:auto;display:block}
+
+/* Floating status badges */
+.fbadge{position:absolute;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:.55rem .9rem;font-family:var(--fm);font-size:.62rem;display:flex;align-items:center;gap:.45rem;white-space:nowrap;z-index:10;opacity:0;animation:fbup .5s ease-out forwards, fbob 5s ease-in-out infinite}
+@keyframes fbup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.fbadge.pass{border-color:rgba(0,207,255,.3);color:var(--c);top:8%;right:-2%;animation-delay:2.2s,2.2s}
+.fbadge.warn{border-color:rgba(255,192,36,.3);color:var(--au);bottom:28%;right:-4%;animation-delay:2.7s,2.7s}
+.fbadge.done{border-color:rgba(255,85,25,.3);color:var(--o);bottom:8%;left:2%;animation-delay:3.2s,3.2s}
+.fbdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.fbadge.pass .fbdot{background:var(--c)}
+.fbadge.warn .fbdot{background:var(--au)}
+.fbadge.done .fbdot{background:var(--o)}
+
+/* ═══ MARQUEE ═══ */
+.mband{border-top:1px solid var(--b);border-bottom:1px solid var(--b);background:var(--s1);padding:.85rem 0;overflow:hidden}
+.mlabel{font-family:var(--fm);font-size:.58rem;color:var(--m);letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-bottom:.65rem}
+.mtrack{display:flex;gap:4.5rem;animation:mscroll 28s linear infinite;width:max-content}
+.mtrack span{font-family:var(--fn);font-size:.78rem;font-weight:700;color:var(--m);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+
+@keyframes mscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ═══ SECTION BASE ═══ */
+section{padding:6rem 3rem;position:relative}
+.slabel{font-family:var(--fm);font-size:.62rem;color:var(--c);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.7rem}
+.slabel::before{content:'';width:22px;height:1px;background:var(--c)}
+.slabel.o{color:var(--o)}
+.slabel.o::before{background:var(--o)}
+.sh1{font-family:var(--fn);font-size:clamp(1.9rem,3.5vw,2.9rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--w);margin-bottom:1rem}
+.ssub{font-size:.95rem;color:var(--m2);max-width:520px;line-height:1.7;font-weight:300}
+
+/* ═══ PROBLEM ═══ */
+#problem{background:var(--s1)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
+.pcard{background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:2.2rem;position:relative;overflow:hidden;transition:border-color .3s}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--o);opacity:0;transition:opacity .3s}
+.pcard:hover{border-color:rgba(255,85,25,.25)}
+.pcard:hover::before{opacity:1}
+.pnum{font-family:var(--fn);font-size:3.5rem;font-weight:800;color:var(--o);opacity:.18;line-height:1;margin-bottom:.5rem;letter-spacing:-.05em}
+.ptitle{font-family:var(--fn);font-size:1.05rem;font-weight:700;color:var(--w);margin-bottom:.75rem}
+.pdesc{font-size:.85rem;color:var(--m2);line-height:1.65;font-weight:300}
+
+/* ═══ PRODUCT ═══ */
+.mgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:3.5rem}
+.mcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:2.5rem;position:relative;overflow:hidden;cursor:default;transition:border-color .3s,background .3s}
+.mcard:hover{border-color:var(--bc);background:var(--s2)}
+.scanline{position:absolute;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--c),transparent);top:0;opacity:0;pointer-events:none}
+.mcard:hover .scanline{animation:scan .9s ease-in-out}
+@keyframes scan{from{top:0;opacity:0}15%{opacity:.9}85%{opacity:.5}to{top:100%;opacity:0}}
+.mcard.o-card:hover{border-color:rgba(255,85,25,.3)}
+.mcard.o-card:hover .scanline{background:linear-gradient(90deg,transparent,var(--o),transparent)}
+.mcard.au-card:hover{border-color:rgba(255,192,36,.3)}
+.mcard.au-card:hover .scanline{background:linear-gradient(90deg,transparent,var(--au),transparent)}
+.micn{width:46px;height:46px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1.6rem;flex-shrink:0}
+.micn.c{background:var(--cg);border:1px solid var(--bc)}
+.micn.o{background:var(--og);border:1px solid rgba(255,85,25,.2)}
+.micn.au{background:var(--ag);border:1px solid rgba(255,192,36,.2)}
+.micn svg{width:22px;height:22px}
+.mtag{font-family:var(--fm);font-size:.57rem;color:var(--c);letter-spacing:.12em;text-transform:uppercase;background:var(--cd);border:1px solid rgba(0,207,255,.1);padding:.12rem .5rem;border-radius:3px;display:inline-block;margin-bottom:1rem}
+.mtag.o{color:var(--o);background:var(--og);border-color:rgba(255,85,25,.15)}
+.mtag.au{color:var(--au);background:var(--ag);border-color:rgba(255,192,36,.15)}
+.mname{font-family:var(--fn);font-size:1.4rem;font-weight:700;color:var(--w);margin-bottom:.6rem;letter-spacing:-.02em}
+.mdesc{font-size:.875rem;color:var(--m2);line-height:1.65;font-weight:300;margin-bottom:1.6rem}
+.mlist{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.mlist li{font-size:.75rem;color:var(--m);font-family:var(--fm);display:flex;align-items:flex-start;gap:.5rem;line-height:1.4}
+.mlist li::before{content:'→';color:var(--c);flex-shrink:0;margin-top:1px}
+.mcard.o-card .mlist li::before{color:var(--o)}
+.mcard.au-card .mlist li::before{color:var(--au)}
+
+/* Corner brackets on cards */
+.mcard::after{content:'';position:absolute;bottom:12px;right:12px;width:14px;height:14px;border-right:1px solid rgba(0,207,255,.2);border-bottom:1px solid rgba(0,207,255,.2)}
+
+/* ═══ HOW IT WORKS ═══ */
+#how{background:var(--s1)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:3.5rem;position:relative}
+.steps::before{content:'';position:absolute;top:27px;left:calc(16.67% + 27px);right:calc(16.67% + 27px);height:1px;background:repeating-linear-gradient(90deg,var(--bc) 0,var(--bc) 8px,transparent 8px,transparent 18px)}
+.step{padding:0 2rem}
+.step-n{width:54px;height:54px;border:1px solid var(--bc);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fn);font-size:1.1rem;font-weight:800;color:var(--c);background:var(--s2);position:relative;z-index:2;margin-bottom:1.5rem}
+.step-t{font-family:var(--fn);font-size:1.15rem;font-weight:700;color:var(--w);margin-bottom:.7rem}
+.step-d{font-size:.855rem;color:var(--m2);line-height:1.65;font-weight:300}
+.step-c{font-family:var(--fm);font-size:.58rem;color:var(--m);margin-top:1rem;letter-spacing:.08em}
+
+/* ═══ STATS ═══ */
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-top:3.5rem}
+.scell{background:var(--s1);padding:2.5rem 2rem;text-align:center;transition:background .2s}
+.scell:hover{background:var(--s2)}
+.sbig{font-family:var(--fn);font-size:2.9rem;font-weight:800;letter-spacing:-.04em;color:var(--w);line-height:1;margin-bottom:.5rem}
+.sbig .cx{color:var(--c)}
+.sbig .ox{color:var(--o)}
+.sbig .ax{color:var(--au)}
+.sclabel{font-size:.7rem;color:var(--m);font-family:var(--fm);letter-spacing:.1em;text-transform:uppercase}
+
+/* ═══ FOUNDER ═══ */
+#founder{background:var(--bg)}
+.founder-wrap{margin-top:3.5rem}
+.founder-card{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:0;display:flex;overflow:hidden;position:relative}
+.founder-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--c),var(--o))}
+.founder-left{flex:0 0 280px;background:var(--s2);padding:3rem 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;position:relative;border-right:1px solid var(--b)}
+.founder-left::after{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--gl) 1px,transparent 1px),linear-gradient(90deg,var(--gl) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.avatar-ring{width:130px;height:130px;border-radius:50%;border:1.5px solid var(--bc);background:var(--s3);display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+.avatar-cross{position:absolute;z-index:0}
+.avatar-cross::before{content:'';position:absolute;width:1px;height:160px;background:rgba(0,207,255,.14);left:65px;top:-15px}
+.avatar-cross::after{content:'';position:absolute;height:1px;width:160px;background:rgba(0,207,255,.14);top:65px;left:-15px}
+.ai{font-family:var(--fn);font-size:2.2rem;font-weight:800;color:var(--c);letter-spacing:-.02em}
+.founder-meta{text-align:center;position:relative;z-index:1}
+.fname{font-family:var(--fn);font-size:1.25rem;font-weight:700;color:var(--w);letter-spacing:-.02em;margin-bottom:.2rem}
+.frole{font-family:var(--fm);font-size:.6rem;color:var(--c);letter-spacing:.14em;text-transform:uppercase}
+.founder-links{display:flex;flex-direction:column;gap:.5rem;width:100%;position:relative;z-index:1}
+.flink{display:flex;align-items:center;justify-content:center;gap:.4rem;font-family:var(--fm);font-size:.6rem;color:var(--m2);text-decoration:none;border:1px solid var(--b);padding:.35rem .7rem;border-radius:3px;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;width:100%}
+.flink:hover{color:var(--c);border-color:var(--bc)}
+.founder-right{flex:1;padding:3rem 3.5rem}
+.founder-annotation{font-family:var(--fm);font-size:.58rem;color:var(--m);letter-spacing:.1em;line-height:1.8;margin-bottom:2rem;display:flex;flex-direction:column;gap:.15rem}
+.fquote{font-family:var(--fn);font-size:1.35rem;font-weight:700;color:var(--w);line-height:1.45;margin-bottom:1.25rem;padding-left:1.2rem;border-left:2px solid var(--c);max-width:580px}
+.fbio{font-size:.9rem;color:var(--m2);line-height:1.75;font-weight:300;max-width:580px;margin-bottom:1.75rem}
+.ftags{display:flex;flex-wrap:wrap;gap:.5rem}
+.ftag{font-family:var(--fm);font-size:.6rem;color:var(--m);border:1px solid var(--b);padding:.25rem .65rem;border-radius:3px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ═══ PRICING ═══ */
+.pgricol{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
+.prc{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:2.5rem;position:relative;transition:border-color .3s,transform .3s}
+.prc:hover{border-color:var(--bc);transform:translateY(-4px)}
+.prc.feat{border-color:var(--c);background:var(--s2)}
+.prc.feat::before{content:'Most popular';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--c);color:var(--ink);font-family:var(--fm);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .8rem;border-radius:0 0 5px 5px}
+.ptier{font-family:var(--fm);font-size:.6rem;color:var(--c);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem}
+.pprice{font-family:var(--fn);font-size:2.5rem;font-weight:800;color:var(--w);letter-spacing:-.04em;line-height:1;margin-bottom:.2rem}
+.pprice sup{font-size:1rem;vertical-align:super;margin-right:.15rem;font-weight:700}
+.pperiod{font-size:.75rem;color:var(--m);margin-bottom:1.5rem;font-weight:300}
+.pdesc2{font-size:.82rem;color:var(--m2);margin-bottom:1.75rem;line-height:1.6;font-weight:300}
+.pfeats{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:2rem}
+.pfeats li{font-size:.8rem;color:var(--m2);display:flex;align-items:flex-start;gap:.55rem;line-height:1.4}
+.pfeats li::before{content:'✓';color:var(--c);font-size:.75rem;flex-shrink:0;margin-top:1px}
+.pcta{display:block;width:100%;text-align:center;padding:.75rem;border-radius:4px;font-family:var(--fn);font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;letter-spacing:.02em}
+.pcta.out{border:1px solid var(--b);color:var(--w)}
+.pcta.out:hover{border-color:var(--bc);color:var(--c)}
+.pcta.sol{background:var(--c);color:var(--ink)}
+.pcta.sol:hover{background:#33DAFF}
+
+/* ═══ CTA SECTION ═══ */
+#cta{background:var(--s1);text-align:center}
+.ctabox{max-width:680px;margin:0 auto;padding:4rem 3rem;background:var(--s2);border:1px solid var(--bc);border-radius:16px;position:relative;overflow:hidden}
+.ctabox::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(0,207,255,.07) 0%,transparent 65%);pointer-events:none}
+.ctabox::after{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--gl) 1px,transparent 1px),linear-gradient(90deg,var(--gl) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.ctatitle{font-family:var(--fn);font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:800;color:var(--w);letter-spacing:-.03em;margin-bottom:.9rem;line-height:1.1;position:relative;z-index:1}
+.ctasub{font-size:.92rem;color:var(--m2);margin-bottom:2rem;font-weight:300;position:relative;z-index:1}
+.ctaform{display:flex;gap:.7rem;max-width:420px;margin:0 auto;position:relative;z-index:1;flex-wrap:wrap}
+.ctainput{flex:1;min-width:200px;padding:.7rem 1rem;background:var(--s3);border:1px solid var(--b);border-radius:4px;color:var(--w);font-size:.875rem;font-family:var(--fb);outline:none;transition:border-color .2s}
+.ctainput::placeholder{color:var(--m)}
+.ctainput:focus{border-color:var(--bc)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--ink);border-top:1px solid var(--b);padding:2.5rem 3rem}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--b)}
+.footer-brand .nav-logo{margin-bottom:.5rem;display:inline-flex}
+.ftag2{font-family:var(--fm);font-size:.62rem;color:var(--m);letter-spacing:.06em;line-height:1.6;max-width:240px}
+.footer-col h4{font-family:var(--fm);font-size:.6rem;color:var(--m);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.footer-col ul a{font-size:.8rem;color:var(--m);text-decoration:none;transition:color .2s;font-family:var(--fb)}
+.footer-col ul a:hover{color:var(--m2)}
+.fcols{display:flex;gap:4rem;flex-wrap:wrap}
+.footer-copy{font-family:var(--fm);font-size:.6rem;color:var(--m);letter-spacing:.08em;text-align:center}
+.footer-copy span{color:var(--c)}
+
+/* ═══ REVEAL ═══ */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.rv:nth-child(2){transition-delay:.1s}
+.rv:nth-child(3){transition-delay:.2s}
+.rv:nth-child(4){transition-delay:.3s}
+.rv:nth-child(5){transition-delay:.4s}
+
+/* annotation brackets */
+.brk{position:relative}
+.brk::before,.brk::after{content:'';position:absolute;width:10px;height:10px;border-color:rgba(0,207,255,.2);border-style:solid}
+.brk::before{top:0;left:0;border-width:1px 0 0 1px}
+.brk::after{bottom:0;right:0;border-width:0 1px 1px 0}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:960px){
+  #nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  #hero{flex-direction:column;padding:6rem 1.5rem 3rem;gap:2.5rem}
+  .hero-content{width:100%;max-width:100%}
+  .hero-visual{width:100%;min-height:300px}
+  section{padding:4rem 1.5rem}
+  .pgrid,.steps,.pgricol{grid-template-columns:1fr}
+  .mgrid{grid-template-columns:1fr}
+  .srow{grid-template-columns:repeat(2,1fr)}
+  .founder-card{flex-direction:column}
+  .founder-left{flex:0 0 auto;border-right:none;border-bottom:1px solid var(--b)}
+  .steps::before{display:none}
+  .hero-stats{gap:1.5rem}
+  footer{padding:2rem 1.5rem}
+  .footer-top{flex-direction:column}
+  .fcols{gap:2.5rem}
+  .ctabox{padding:2.5rem 1.5rem}
+}
+@media(max-width:560px){
+  .srow{grid-template-columns:1fr}
+  .pgricol{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <span class="logox">
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="13" cy="13" r="11.5" stroke="#00CFFF" stroke-width="1.2"/>
+        <circle cx="13" cy="13" r="4" fill="#00CFFF"/>
+        <line x1="0" y1="13" x2="26" y2="13" stroke="#00CFFF" stroke-width=".8" opacity=".4"/>
+        <line x1="13" y1="0" x2="13" y2="26" stroke="#00CFFF" stroke-width=".8" opacity=".4"/>
+      </svg>
+    </span>
+    eclipix
+  </a>
+  <ul class="nav-links">
+    <li><a href="#product">Product</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#founder">About</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Request demo →</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-bg-glow"></div>
+
+  <div class="hero-content">
+    <div class="hero-pill">
+      <span class="pulse"></span>
+      Now live — AI-powered AEC intelligence
+    </div>
+    <h1 class="hero-h1">
+      The AI layer<br>
+      your <span class="cx">drawings</span><br>
+      <span class="ox">deserve.</span>
+    </h1>
+    <p class="hero-p">eclipix reads, analyses, and validates every architectural drawing against building code — automatically. From permit submission to BIM intelligence, in minutes.</p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn-p">Request early access →</a>
+      <a href="#how" class="btn-g">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <span class="hs-num" data-count="500">0</span>
+        <span class="hs-label">Projects analysed</span>
+      </div>
+      <div>
+        <span class="hs-num">99.2%</span>
+        <span class="hs-label">Accuracy rate</span>
+      </div>
+      <div>
+        <span class="hs-num" data-count="80">0</span>
+        <span class="hs-label">% faster review</span>
+      </div>
+      <div>
+        <span class="hs-num">4min</span>
+        <span class="hs-label">Avg review time</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="blueprint-wrap">
+      <!-- Floating badges -->
+      <div class="fbadge pass"><span class="fbdot"></span>Compliance: PASS — NBC 4.3</div>
+      <div class="fbadge warn"><span class="fbdot"></span>⚠ 3 issues flagged</div>
+      <div class="fbadge done"><span class="fbdot"></span>BIM model indexed</div>
+
+      <!-- Blueprint SVG — animated floor plan -->
+      <svg class="blueprint-svg" id="bpsvg" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background faint grid ref lines -->
+        <g opacity=".22">
+          <line x1="90" y1="0" x2="90" y2="420" stroke="#00CFFF" stroke-width=".3" stroke-dasharray="4 10"/>
+          <line x1="225" y1="0" x2="225" y2="420" stroke="#00CFFF" stroke-width=".3" stroke-dasharray="4 10"/>
+          <line x1="360" y1="0" x2="360" y2="420" stroke="#00CFFF" stroke-width=".3" stroke-dasharray="4 10"/>
+          <line x1="0" y1="65" x2="520" y2="65" stroke="#00CFFF" stroke-width=".3" stroke-dasharray="4 10"/>
+          <line x1="0" y1="195" x2="520" y2="195" stroke="#00CFFF" stroke-width=".3" stroke-dasharray="4 10"/>
+          <line x1="0" y1="325" x2="520" y2="325" stroke="#00CFFF" stroke-width=".3" stroke-dasharray="4 10"/>
+        </g>
+
+        <!-- Building perimeter -->
+        <path id="bp-perim" d="M90,65 L360,65 L360,325 L90,325 Z"
+          fill="rgba(0,207,255,.04)" stroke="#00CFFF" stroke-width="2" fill-rule="evenodd"/>
+
+        <!-- Internal walls -->
+        <path id="bp-vwall" d="M225,65 L225,195" fill="none" stroke="#00CFFF" stroke-width="1.5"/>
+        <path id="bp-hwall1" d="M90,195 L192,195" fill="none" stroke="#00CFFF" stroke-width="1.5"/>
+        <path id="bp-hwall2" d="M258,195 L360,195" fill="none" stroke="#00CFFF" stroke-width="1.5"/>
+        <path id="bp-vwall2" d="M225,220 L225,325" fill="none" stroke="#00CFFF" stroke-width="1.5"/>
+
+        <!-- Corridor label -->
+        <text x="225" y="213" fill="rgba(0,207,255,.3)" font-family="'Space Mono',monospace" font-size="7" text-anchor="middle" letter-spacing="2">CORRIDOR</text>
+
+        <!-- Door symbols — Room A (top-left) interior door -->
+        <path id="bp-door1" d="M192,195 A33,33,0,0,1,192,162" fill="none" stroke="#00CFFF" stroke-width=".8"/>
+        <path id="bp-doorleaf1" d="M192,195 L192,162" fill="none" stroke="#00CFFF" stroke-width=".8"/>
+
+        <!-- Door — Room B exterior -->
+        <path id="bp-door2" d="M258,195 A33,33,0,0,0,258,162" fill="none" stroke="#00CFFF" stroke-width=".8"/>
+        <path id="bp-doorleaf2" d="M258,195 L258,162" fill="none" stroke="#00CFFF" stroke-width=".8"/>
+
+        <!-- Entry door — left wall, ground floor -->
+        <path id="bp-door3" d="M90,260 L90,228" fill="none" stroke="#00CFFF" stroke-width="1.5" stroke-dasharray="0"/>
+        <path id="bp-door3arc" d="M90,228 A32,32,0,0,1,122,228" fill="none" stroke="#00CFFF" stroke-width=".8"/>
+        <path id="bp-door3leaf" d="M90,228 L122,228" fill="none" stroke="#00CFFF" stroke-width=".8"/>
+
+        <!-- Window on right wall -->
+        <path id="bp-win" d="M360,100 L360,148" fill="none" stroke="#00CFFF" stroke-width="3"/>
+        <path d="M360,109 L366,109 M360,120 L366,120 M360,131 L366,131 M360,142 L366,142" fill="none" stroke="#00CFFF" stroke-width=".6"/>
+
+        <!-- Room labels -->
+        <text x="157" y="135" fill="rgba(0,207,255,.35)" font-family="'Space Mono',monospace" font-size="7.5" text-anchor="middle" letter-spacing="1.5">ROOM 01</text>
+        <text x="157" y="147" fill="rgba(0,207,255,.2)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle" letter-spacing="1">24.5 SQM</text>
+        <text x="293" y="135" fill="rgba(0,207,255,.35)" font-family="'Space Mono',monospace" font-size="7.5" text-anchor="middle" letter-spacing="1.5">ROOM 02</text>
+        <text x="293" y="147" fill="rgba(0,207,255,.2)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle" letter-spacing="1">18.2 SQM</text>
+        <text x="157" y="275" fill="rgba(0,207,255,.35)" font-family="'Space Mono',monospace" font-size="7.5" text-anchor="middle" letter-spacing="1.5">ROOM 03</text>
+        <text x="157" y="287" fill="rgba(0,207,255,.2)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle" letter-spacing="1">22.1 SQM</text>
+        <text x="293" y="275" fill="rgba(0,207,255,.35)" font-family="'Space Mono',monospace" font-size="7.5" text-anchor="middle" letter-spacing="1.5">ROOM 04</text>
+        <text x="293" y="287" fill="rgba(0,207,255,.2)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle" letter-spacing="1">20.8 SQM</text>
+
+        <!-- Dimension lines -->
+        <!-- Top width -->
+        <path id="bp-dimT" d="M90,44 L360,44" fill="none" stroke="#FF5519" stroke-width=".8"/>
+        <line x1="90" y1="38" x2="90" y2="50" stroke="#FF5519" stroke-width=".8"/>
+        <line x1="360" y1="38" x2="360" y2="50" stroke="#FF5519" stroke-width=".8"/>
+        <text x="225" y="40" fill="#FF5519" font-family="'Space Mono',monospace" font-size="7" text-anchor="middle">27,000</text>
+
+        <!-- Right height -->
+        <path id="bp-dimR" d="M382,65 L382,325" fill="none" stroke="#FF5519" stroke-width=".8"/>
+        <line x1="376" y1="65" x2="388" y2="65" stroke="#FF5519" stroke-width=".8"/>
+        <line x1="376" y1="325" x2="388" y2="325" stroke="#FF5519" stroke-width=".8"/>
+        <text x="400" y="200" fill="#FF5519" font-family="'Space Mono',monospace" font-size="7" text-anchor="start">26,000</text>
+
+        <!-- Grid axis bubbles — top -->
+        <circle cx="90" cy="24" r="13" fill="none" stroke="#00CFFF" stroke-width=".8" opacity=".55"/>
+        <text x="90" y="28" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="10" font-weight="700" text-anchor="middle">A</text>
+        <circle cx="225" cy="24" r="13" fill="none" stroke="#00CFFF" stroke-width=".8" opacity=".55"/>
+        <text x="225" y="28" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="10" font-weight="700" text-anchor="middle">B</text>
+        <circle cx="360" cy="24" r="13" fill="none" stroke="#00CFFF" stroke-width=".8" opacity=".55"/>
+        <text x="360" y="28" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="10" font-weight="700" text-anchor="middle">C</text>
+
+        <!-- Grid lines from bubbles to building (top) -->
+        <line x1="90" y1="37" x2="90" y2="65" stroke="#00CFFF" stroke-width=".35" opacity=".4"/>
+        <line x1="225" y1="37" x2="225" y2="65" stroke="#00CFFF" stroke-width=".35" opacity=".4"/>
+        <line x1="360" y1="37" x2="360" y2="65" stroke="#00CFFF" stroke-width=".35" opacity=".4"/>
+
+        <!-- Grid axis bubbles — left -->
+        <circle cx="55" cy="65" r="13" fill="none" stroke="#00CFFF" stroke-width=".8" opacity=".55"/>
+        <text x="55" y="69" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="10" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="55" cy="195" r="13" fill="none" stroke="#00CFFF" stroke-width=".8" opacity=".55"/>
+        <text x="55" y="199" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="10" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="55" cy="325" r="13" fill="none" stroke="#00CFFF" stroke-width=".8" opacity=".55"/>
+        <text x="55" y="329" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="10" font-weight="700" text-anchor="middle">3</text>
+
+        <!-- Grid lines from left bubbles -->
+        <line x1="68" y1="65" x2="90" y2="65" stroke="#00CFFF" stroke-width=".35" opacity=".4"/>
+        <line x1="68" y1="195" x2="90" y2="195" stroke="#00CFFF" stroke-width=".35" opacity=".4"/>
+        <line x1="68" y1="325" x2="90" y2="325" stroke="#00CFFF" stroke-width=".35" opacity=".4"/>
+
+        <!-- AI Compliance issue markers -->
+        <circle id="bp-issue1" cx="157" cy="195" r="9" fill="rgba(255,85,25,.18)" stroke="#FF5519" stroke-width="1.2"/>
+        <text x="157" y="199" fill="#FF5519" font-family="'Syne',sans-serif" font-size="9" font-weight="800" text-anchor="middle">!</text>
+        <path d="M166,191 L188,178" fill="none" stroke="#FF5519" stroke-width=".6" stroke-dasharray="3 3" id="bp-leader1"/>
+        <text x="192" y="176" fill="#FF5519" font-family="'Space Mono',monospace" font-size="6.5" id="bp-annot1">NBC 4.3.2 — Width</text>
+
+        <!-- AI verified marker -->
+        <circle id="bp-ok1" cx="293" cy="195" r="9" fill="rgba(0,207,255,.12)" stroke="#00CFFF" stroke-width="1" opacity=".8"/>
+        <text x="293" y="199" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="9" font-weight="800" text-anchor="middle">✓</text>
+
+        <!-- North arrow (bottom right) -->
+        <g transform="translate(440,340)" opacity=".55">
+          <circle cx="0" cy="0" r="18" fill="none" stroke="#00CFFF" stroke-width=".7"/>
+          <polygon points="0,-14 4,0 0,5 -4,0" fill="#00CFFF" opacity=".85"/>
+          <text y="26" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="8" font-weight="700" text-anchor="middle">N</text>
+        </g>
+
+        <!-- Title block -->
+        <g opacity=".5">
+          <rect x="396" y="355" width="116" height="58" fill="none" stroke="#00CFFF" stroke-width=".5"/>
+          <line x1="396" y1="368" x2="512" y2="368" stroke="#00CFFF" stroke-width=".3"/>
+          <text x="454" y="364" fill="#00CFFF" font-family="'Syne',sans-serif" font-size="6.5" font-weight="800" text-anchor="middle" letter-spacing="1.5">ECLIPIX</text>
+          <text x="454" y="378" fill="rgba(0,207,255,.65)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle">GND FLOOR PLAN</text>
+          <text x="454" y="389" fill="rgba(0,207,255,.55)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle">SCALE 1:100</text>
+          <text x="454" y="400" fill="rgba(0,207,255,.45)" font-family="'Space Mono',monospace" font-size="5.5" text-anchor="middle">DWG: EC-GF-001</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="mband">
+  <p class="mlabel">Trusted by leading AEC firms across India</p>
+  <div class="mtrack" id="mtrack">
+    <span>Morphogenesis</span><span>Hafeez Contractor</span><span>CP Kukreja</span>
+    <span>Arcop Associates</span><span>Sterling Engineering</span><span>Edifice Consultants</span>
+    <span>Nandita Architects</span><span>Venkataramanan Assoc</span><span>Genesis Planning</span>
+    <span>RSP Design</span><span>Prabhakar B. Bhagwat</span><span>Hundredhands</span>
+    <!-- duplicated for seamless loop -->
+    <span>Morphogenesis</span><span>Hafeez Contractor</span><span>CP Kukreja</span>
+    <span>Arcop Associates</span><span>Sterling Engineering</span><span>Edifice Consultants</span>
+    <span>Nandita Architects</span><span>Venkataramanan Assoc</span><span>Genesis Planning</span>
+    <span>RSP Design</span><span>Prabhakar B. Bhagwat</span><span>Hundredhands</span>
+  </div>
+</div>
+
+<!-- ═══ PROBLEM ═══ -->
+<section id="problem">
+  <div class="slabel o">The Problem</div>
+  <h2 class="sh1">AEC's most expensive<br>mistake happens at the desk.</h2>
+  <p class="ssub">Construction rework costs India over ₹50,000 Cr annually — and most of it starts with drawing errors and compliance failures no one caught in time.</p>
+  <div class="pgrid">
+    <div class="pcard rv">
+      <div class="pnum">01</div>
+      <div class="ptitle">Drawing review is manual and slow</div>
+      <p class="pdesc">A 200-sheet drawing set takes 2–3 days to review by hand. Missed dimension clashes, incomplete annotations, and referencing errors slip through — arriving on site at 10× the cost to fix.</p>
+    </div>
+    <div class="pcard rv">
+      <div class="pnum">02</div>
+      <div class="ptitle">Compliance expertise is locked in silos</div>
+      <p class="pdesc">Building codes change constantly across jurisdictions. NBC, IS codes, state bylaws, RERA requirements — firms rely on a single expert's knowledge. One error means a rejected submission and weeks of delay.</p>
+    </div>
+    <div class="pcard rv">
+      <div class="pnum">03</div>
+      <div class="ptitle">BIM data stays underutilised</div>
+      <p class="pdesc">Firms invest in Revit and generate data-rich BIM models — then query nothing. Clash detection is the ceiling. Material schedules, code checks, and design intelligence sit locked in the model file.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRODUCT ═══ -->
+<section id="product">
+  <div class="slabel">Product</div>
+  <h2 class="sh1">Four modules.<br>One intelligent platform.</h2>
+  <p class="ssub">eclipix sits between your design tool and your downstream workflow — reading every drawing, checking every clause, querying every model.</p>
+  <div class="mgrid">
+
+    <!-- DrawScan -->
+    <div class="mcard rv">
+      <div class="scanline"></div>
+      <div class="micn c">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00CFFF" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/><circle cx="17" cy="16" r="2" fill="rgba(0,207,255,.25)"/></svg>
+      </div>
+      <span class="mtag">Drawing Analysis</span>
+      <div class="mname">DrawScan</div>
+      <p class="mdesc">Upload any PDF or DWG drawing set and eclipix extracts annotations, validates dimensions, flags missing callouts, and identifies incomplete sheets — in minutes, not days.</p>
+      <ul class="mlist">
+        <li>Dimensional inconsistency detection across plan, elevation, section</li>
+        <li>Missing annotation flags — fire ratings, structural grids, accessibility paths</li>
+        <li>Incomplete drawing set detection with severity-tiered reports</li>
+        <li>Drawing Health Score with Critical / Major / Minor classification</li>
+      </ul>
+    </div>
+
+    <!-- CompliCheck -->
+    <div class="mcard o-card rv">
+      <div class="scanline"></div>
+      <div class="micn o">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FF5519" stroke-width="1.5" stroke-linecap="round"><path d="M12 2L3 6v6c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V6L12 2z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <span class="mtag o">Compliance Intelligence</span>
+      <div class="mname">CompliCheck</div>
+      <p class="mdesc">A continuously updated regulatory knowledge base covering NBC 2016, state amendments, IS codes, accessibility standards, and fire NOC requirements — checking your drawings clause by clause.</p>
+      <ul class="mlist">
+        <li>NBC 2016 + 12 state jurisdictions — room sizes, corridors, egress</li>
+        <li>IS 456, IS 800 structural drawing compliance</li>
+        <li>RPWD Act accessibility checks — ramps, door widths, parking</li>
+        <li>Jurisdiction-specific report formatted for submission</li>
+      </ul>
+    </div>
+
+    <!-- BIMind -->
+    <div class="mcard au-card rv">
+      <div class="scanline"></div>
+      <div class="micn au">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFC024" stroke-width="1.5" stroke-linecap="round"><path d="M12 2l8 4v6c0 4.4-3.2 8.5-8 9.8C7.2 20.5 4 16.4 4 12V6l8-4z" opacity=".4"/><path d="M9 9l6 6M15 9l-6 6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <span class="mtag au">BIM Intelligence</span>
+      <div class="mname">BIMind</div>
+      <p class="mdesc">Connect your Revit or ArchiCAD model and query it in plain language. eclipix adds a natural language analytics layer on top of your BIM data — no exports, no scripting.</p>
+      <ul class="mlist">
+        <li>NL queries: "All fire doors with rating &lt; 60 min in east wing"</li>
+        <li>Automated BOQ extraction with specification attributes</li>
+        <li>Clash intelligence — severity-classified with resolution suggestions</li>
+        <li>Design change tracking between model versions</li>
+      </ul>
+    </div>
+
+    <!-- AuditTrail -->
+    <div class="mcard rv">
+      <div class="scanline"></div>
+      <div class="micn c">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00CFFF" stroke-width="1.5" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      </div>
+      <span class="mtag">Project Intelligence</span>
+      <div class="mname">AuditTrail</div>
+      <p class="mdesc">eclipix becomes the audit backbone of every project — tracking submissions, re-runs, markups, and approvals. Automated RFI drafting turns every flagged issue into an actionable document.</p>
+      <ul class="mlist">
+        <li>Version-linked compliance — re-runs on every drawing revision</li>
+        <li>Automated RFI drafting from flagged issues</li>
+        <li>Project health score + compliance readiness dashboard</li>
+        <li>API integration — Procore, Aconex, BIM 360</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+  <div class="slabel">Process</div>
+  <h2 class="sh1">From upload to intelligence<br>in under five minutes.</h2>
+  <p class="ssub">No migration. No training. No new software your team needs to learn. eclipix integrates with what you already use.</p>
+  <div class="steps">
+    <div class="step rv brk">
+      <div class="step-n">01</div>
+      <div class="step-t">Upload your drawings</div>
+      <p class="step-d">Drop in a PDF drawing set, DWG file, or connect your Revit model directly via the eclipix plugin. Any format, any scale, any jurisdiction.</p>
+      <div class="step-c">// Input: PDF · DWG · IFC · Revit API</div>
+    </div>
+    <div class="step rv brk">
+      <div class="step-n">02</div>
+      <div class="step-t">AI analyses every element</div>
+      <p class="step-d">eclipix's document pipeline segments every drawing element — dimensions, annotations, rooms, walls, doors — and runs it through the compliance engine and drawing analysis model simultaneously.</p>
+      <div class="step-c">// Engine: Vision · RAG · BIM Query</div>
+    </div>
+    <div class="step rv brk">
+      <div class="step-n">03</div>
+      <div class="step-t">Get structured intelligence</div>
+      <p class="step-d">Receive a Drawing Health Report, a clause-by-clause Compliance Audit, and a BIM query dashboard — all in one workspace. Download as PDF or push to your project management system.</p>
+      <div class="step-c">// Output: Report · API · Dashboard</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<section id="stats">
+  <div class="slabel">By the numbers</div>
+  <h2 class="sh1">The AEC industry is<br>our only focus.</h2>
+  <div class="srow">
+    <div class="scell rv">
+      <div class="sbig"><span class="cx" data-count="200">0</span>+</div>
+      <div class="sclabel">Drawing sets analysed</div>
+    </div>
+    <div class="scell rv">
+      <div class="sbig"><span class="ox" data-count="12">0</span></div>
+      <div class="sclabel">Jurisdictions covered</div>
+    </div>
+    <div class="scell rv">
+      <div class="sbig"><span class="ax" data-count="4">0</span>min</div>
+      <div class="sclabel">Avg full review time</div>
+    </div>
+    <div class="scell rv">
+      <div class="sbig"><span class="cx">₹625B</span></div>
+      <div class="sclabel">Global AEC rework cost</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOUNDER ═══ -->
+<section id="founder">
+  <div class="slabel">Founder</div>
+  <h2 class="sh1">Built by someone who<br>has seen the problem firsthand.</h2>
+  <div class="founder-wrap">
+    <div class="founder-card rv">
+      <div class="founder-left">
+        <div style="position:relative">
+          <div class="avatar-cross"></div>
+          <div class="avatar-ring">
+            <span class="ai">RC</span>
+          </div>
+        </div>
+        <div class="founder-meta">
+          <div class="fname">Rishul Chanana</div>
+          <div class="frole">Founder & CEO, eclipix</div>
+        </div>
+        <div class="founder-links">
+          <a href="#" class="flink">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="#" class="flink">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+          <a href="mailto:rishul@eclipix.ai" class="flink">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+            rishul@eclipix.ai
+          </a>
+        </div>
+      </div>
+      <div class="founder-right">
+        <div class="founder-annotation">
+          <span>// REF: FOUNDER-001</span>
+          <span>// ROLE: CEO + PRODUCT</span>
+          <span>// ENTITY: eclipix AI Pvt. Ltd.</span>
+        </div>
+        <blockquote class="fquote">
+          "AEC firms shouldn't need a 10-person compliance team to know if their drawings pass code. One architect with eclipix should be able to do what took a full week."
+        </blockquote>
+        <p class="fbio">
+          Rishul Chanana is the founder and CEO of eclipix. Before starting the company, he spent years at the intersection of construction workflows and emerging technology — observing how drawing review and compliance checking were creating project delays, cost overruns, and friction between design teams and municipal authorities across India's growing construction sector.<br><br>
+          He founded eclipix on a simple conviction: the highest-leverage place to apply AI in construction is not the site — it's the drawing. Catching errors and compliance failures before a single brick is laid changes the economics of every project. eclipix is building the intelligence layer that makes that possible for every AEC firm, from a 15-person architecture studio to a 500-person PMC.
+        </p>
+        <div class="ftags">
+          <span class="ftag">AEC Technology</span>
+          <span class="ftag">Drawing Intelligence</span>
+          <span class="ftag">Compliance AI</span>
+          <span class="ftag">BIM Analytics</span>
+          <span class="ftag">India Construction</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing">
+  <div class="slabel">Pricing</div>
+  <h2 class="sh1">Start reviewing drawings<br>in under 10 minutes.</h2>
+  <p class="ssub">All plans include DrawScan. Add CompliCheck, BIMind, and AuditTrail as your workflows demand.</p>
+  <div class="pgricol">
+
+    <div class="prc rv">
+      <div class="ptier">Starter</div>
+      <div class="pprice"><sup>₹</sup>4,999</div>
+      <div class="pperiod">per month · billed monthly</div>
+      <p class="pdesc2">For small architecture practices doing occasional permit submissions. Up to 5 team members.</p>
+      <ul class="pfeats">
+        <li>200 drawing sheet analyses / month</li>
+        <li>DrawScan — Drawing Health Reports</li>
+        <li>PDF + DWG upload support</li>
+        <li>Email support</li>
+        <li>Single project workspace</li>
+      </ul>
+      <a href="#cta" class="pcta out">Get started →</a>
+    </div>
+
+    <div class="prc feat rv">
+      <div class="ptier">Growth</div>
+      <div class="pprice"><sup>₹</sup>14,999</div>
+      <div class="pperiod">per month · billed monthly</div>
+      <p class="pdesc2">For active design firms running multiple projects concurrently. Up to 20 team members + API access.</p>
+      <ul class="pfeats">
+        <li>750 drawing sheet analyses / month</li>
+        <li>DrawScan + CompliCheck (1 jurisdiction)</li>
+        <li>Clause-level NBC compliance audit</li>
+        <li>API access for integrations</li>
+        <li>Multiple project workspaces</li>
+        <li>Priority support + onboarding call</li>
+      </ul>
+      <a href="#cta" class="pcta sol">Start free trial →</a>
+    </div>
+
+    <div class="prc rv">
+      <div class="ptier">Enterprise</div>
+      <div class="pprice">Custom</div>
+      <div class="pperiod">tailored to your firm</div>
+      <p class="pdesc2">For PMCs, large developers, and infrastructure firms with high drawing volumes and multi-jurisdiction needs.</p>
+      <ul class="pfeats">
+        <li>Unlimited drawing analyses</li>
+        <li>DrawScan + CompliCheck (all jurisdictions)</li>
+        <li>BIMind — Revit / IFC plugin</li>
+        <li>AuditTrail — full project intelligence</li>
+        <li>Procore / Aconex / BIM 360 integration</li>
+        <li>Dedicated CSM + SLA guarantee</li>
+      </ul>
+      <a href="#cta" class="pcta out">Talk to us →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section id="cta">
+  <div class="ctabox rv">
+    <h2 class="ctatitle">Ready to stop reviewing<br>drawings by hand?</h2>
+    <p class="ctasub">Join 30+ AEC firms who've already cut review time by 80%. Request early access — we onboard new firms weekly.</p>
+    <div class="ctaform">
+      <input type="email" class="ctainput" placeholder="your@firm.com">
+      <a href="#" class="btn-p">Request access →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">
+        <span class="logox">
+          <svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11.5" stroke="#00CFFF" stroke-width="1.2"/><circle cx="13" cy="13" r="4" fill="#00CFFF"/><line x1="0" y1="13" x2="26" y2="13" stroke="#00CFFF" stroke-width=".8" opacity=".4"/><line x1="13" y1="0" x2="13" y2="26" stroke="#00CFFF" stroke-width=".8" opacity=".4"/></svg>
+        </span>
+        eclipix
+      </a>
+      <p class="ftag2">AI drawing analysis, compliance checking, and BIM intelligence for AEC firms across India.</p>
+    </div>
+    <div class="fcols">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">DrawScan</a></li>
+          <li><a href="#">CompliCheck</a></li>
+          <li><a href="#">BIMind</a></li>
+          <li><a href="#">AuditTrail</a></li>
+          <li><a href="#">API</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#founder">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">NBC 2016 Guide</a></li>
+          <li><a href="#">IS Codes Reference</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@eclipix.ai">hello@eclipix.ai</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Twitter / X</a></li>
+          <li><a href="#cta">Request demo</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copy">
+    © 2025 eclipix AI Pvt. Ltd. · Mumbai, India ·
+    Built for the <span>AEC</span> industry ·
+    Privacy · Terms
+  </div>
+</footer>
+
+<script>
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 40);
+}, { passive: true });
+
+/* ── BLUEPRINT ANIMATION ── */
+function initBlueprint() {
+  const ids = [
+    'bp-perim','bp-vwall','bp-hwall1','bp-hwall2','bp-vwall2',
+    'bp-door1','bp-doorleaf1','bp-door2','bp-doorleaf2',
+    'bp-door3','bp-door3arc','bp-door3leaf','bp-win',
+    'bp-dimT','bp-dimR','bp-issue1','bp-leader1','bp-annot1','bp-ok1'
+  ];
+  ids.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let len = 2000;
+    try { len = el.getTotalLength ? el.getTotalLength() : 2000; } catch(e){}
+    el.style.strokeDasharray = len;
+    el.style.strokeDashoffset = len;
+    el.style.transition = 'none';
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.style.transition = `stroke-dashoffset ${1.5 + i * 0.18}s ease-in-out, opacity 0.4s`;
+      el.style.strokeDashoffset = '0';
+      el.style.opacity = '1';
+    }, 300 + i * 150);
+  });
+}
+window.addEventListener('load', initBlueprint);
+
+/* ── COUNTER ANIMATION ── */
+function animCount(el, target, dur, suffix) {
+  let start = null;
+  suffix = suffix || '';
+  function step(ts) {
+    if (!start) start = ts;
+    const prog = Math.min((ts - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - prog, 3);
+    el.textContent = Math.round(ease * target) + suffix;
+    if (prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── SCROLL REVEAL + COUNTER TRIGGER ── */
+const ro = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+
+    // Counter elements
+    const counters = e.target.querySelectorAll('[data-count]');
+    counters.forEach(el => {
+      const target = parseInt(el.dataset.count);
+      animCount(el, target, 1600);
+    });
+
+    // Hero counter (direct elements)
+    if (e.target.id === 'hero') {
+      document.querySelectorAll('.hs-num[data-count]').forEach(el => {
+        const t = parseInt(el.dataset.count);
+        const sfx = el.closest('.hero-stats')?.children[1] === el.parentElement ? '%' : '+';
+        animCount(el, t, 1800, sfx);
+      });
+    }
+    ro.unobserve(e.target);
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+document.querySelectorAll('.scell').forEach(el => ro.observe(el));
+
+/* ── HERO STATS COUNTER ── */
+const heroObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    document.querySelectorAll('.hs-num[data-count]').forEach(el => {
+      const t = parseInt(el.dataset.count);
+      animCount(el, t, 1800, el.dataset.count === '80' ? '' : '+');
+    });
+    heroObs.disconnect();
+  });
+}, { threshold: 0.5 });
+const heroSection = document.getElementById('hero');
+if (heroSection) heroObs.observe(heroSection);
+</script>
+</body>
+</html>
